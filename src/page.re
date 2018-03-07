@@ -1,3 +1,7 @@
+open Types;
+
+let ste = ReasonReact.stringToElement;
+
 /* This is the basic component. */
 let component = ReasonReact.statelessComponent("Page");
 
@@ -16,6 +20,18 @@ let handleClick = (_event, _self) => Js.log("clicked!");
    `ReasonReact.element(Page.make(~message="hello", [||]))` */
 let make = (~message, _children) => {
   ...component,
-  render: (self) =>
-    <div onClick=(self.handle(handleClick))> (ReasonReact.stringToElement(message)) </div>
+  didMount: self => {
+    let () =
+      Js.Promise.(
+        Api.mockForecast(1, 2)
+        |> then_(jsonText => {
+             let resp: points = parseJson(Js.Json.parseExn(jsonText));
+             Js.log(resp);
+             resolve();
+           })
+        |> ignore
+      );
+    ReasonReact.NoUpdate;
+  },
+  render: self => <div> (ReasonReact.stringToElement(message)) </div>
 };
