@@ -2,6 +2,8 @@ open Types;
 
 let ste = ReasonReact.stringToElement;
 
+[@bs.val] external alert : string => unit = "alert";
+
 type state = {data: option(points)};
 
 type action =
@@ -31,6 +33,9 @@ let make = _children => {
   reducer: (action, _state) =>
     switch action {
     | DataLoaded(pts) => ReasonReact.Update({data: Some(pts)})
+    | PosError(msg) =>
+      alert("GeoLocation: " ++ msg);
+      ReasonReact.NoUpdate;
     | PosLoaded(lat, lon) =>
       let lat = string_of_float(lat);
       let lon = string_of_float(lon);
