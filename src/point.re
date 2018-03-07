@@ -1,21 +1,8 @@
+open Types;
+
 let ste = ReasonReact.stringToElement;
 
 exception NotWeekday(int);
-
-let pic_of_icon = i =>
-  switch i {
-  | "rain" => {js|🌧|js}
-  | "snow" => {js|❄️ ️|js}
-  | "sleet" => {js|🌧|js}
-  | "wind" => {js|💨 |js}
-  | "fog" => {js|☁️|js}
-  | "cloudy" => {js|☁️|js}
-  | "partly-cloudy-day" => {js|⛅|js}
-  | "partly-cloudy-night" => {js|⛅|js}
-  | "clear-night" => {js|🌛|js}
-  | "clear-day" => {js|☀️|js}
-  | _ => {js|🤔|js}
-  };
 
 let getDay = (d: Js.Date.t) => {
   let n = Js.Date.getDay(d) |> int_of_float;
@@ -38,33 +25,38 @@ let string_of_date = (d: Js.Date.t) => {
   {j|$day $date - $(hours):00 |j};
 };
 
-let string_of_prec = (int, prob) => {
-  let prob = prob *. 100.;
-  {js|💧|js} ++ Printf.sprintf(" %0.1fmm/h (%0.2f%%)", int, prob);
-};
+let string_of_rain = r =>
+  {js|💧|js}
+  ++ (
+    switch r {
+    | Some(n) => Printf.sprintf(" %0.1f", n)
+    | None => "0"
+    }
+  )
+  ++ "mm";
 
 let string_of_temp = t => {js|🌡|js} ++ {j| $(t)C|j};
 
 /* let deg = 0x00B0; */
-let string_of_wind = w => {js|💨|js} ++ {j| $(w) m/sec|j};
+let string_of_wind = w => {js|💨|js} ++ {j| $(w)m/sec|j};
+
+let url_of = id => {j|http://openweathermap.org/img/w/$(id).png|j};
 
 let component = ReasonReact.statelessComponent("Point");
 
 /* let calculateStyle = (pressure: float) : ReactDOMRe.style =>
    ReactDOMRe.Style.make(~backgroundColor=calculateDiff(pressure), ()); */
-let make = (~pt: Types.point, _children) => {
+let make = (~pt: point, _children) => {
   ...component,
   render: _self => {
     let date = Js.Date.(pt.time *. 1000. |> fromFloat);
     <div>
       <div className="date"> (ste(date |> string_of_date)) </div>
-      <div className="icon"> (ste(pt.icon |> pic_of_icon)) </div>
-      <div className="summary"> (ste(pt.summary)) </div>
-      <div className="temp"> (ste(string_of_temp(pt.temp))) </div>
-      <div className="rain">
-        (ste(string_of_prec(pt.precInt, pt.precProb)))
-      </div>
-      <div className="wind"> (ste(string_of_wind(pt.wind))) </div>
+      <div className="icon"> <img src=(url_of(pt.icon)) /> </div>
+      <div className="summary"> (ste(pt.desc)) </div>
+      <div className="temp"> (ste(pt.temp |> string_of_temp)) </div>
+      <div className="rain"> (ste(pt.rain |> string_of_rain)) </div>
+      <div className="wind"> (ste(pt.wind |> string_of_wind)) </div>
     </div>;
   }
 };

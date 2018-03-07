@@ -41,16 +41,15 @@ let make = _children => {
       let lon = string_of_float(lon);
       ReasonReact.SideEffects(
         (
-          self => {
-            Js.log(lat ++ " - " ++ lon);
+          self =>
             Api.forecast(lat, lon)
             |> Js.Promise.then_((jsonText: string) => {
-                 let pts = parseJson(Js.Json.parseExn(jsonText));
+                 Js.log(jsonText);
+                 let pts = decodePoints(jsonText);
                  self.send(DataLoaded(pts));
                  Js.Promise.resolve();
                })
-            |> ignore;
-          }
+            |> ignore
         )
       );
     },
@@ -68,7 +67,7 @@ let make = _children => {
           switch state.data {
           | Some(pts) =>
             ReasonReact.arrayToElement(
-              Array.of_list(List.map(pt => <li> <Point pt /> </li>, pts))
+              Array.map(pt => <li> <Point pt /> </li>, pts)
             )
           | None => <div> (ste("Loading data...")) </div>
           }
