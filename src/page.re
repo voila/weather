@@ -23,7 +23,7 @@ let handleClick = (_event, _self) => Js.log("clicked!");
    Which desugars to
 
    `ReasonReact.element(Page.make(~message="hello", [||]))` */
-let make = (~message, _children) => {
+let make = _children => {
   ...component,
   initialState: () => {data: None},
   reducer: (action, _state) =>
