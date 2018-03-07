@@ -35,6 +35,7 @@ let make = (~message, _children) => {
       Js.Promise.(
         Api.mockForecast(1, 2)
         |> then_(jsonText => {
+             /* let x = decodeDataPoint(jsonText); */
              let resp: points = parseJson(Js.Json.parseExn(jsonText));
              self.send(DataLoaded(resp));
              resolve();
