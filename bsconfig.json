@@ -16,6 +16,10 @@
       "in-source": true
     }
   ],
+  "warnings": {
+    "number": "-27+8",
+    "error": true,
+  },
   "suffix": ".bs.js",
   "namespace": true,
   "bs-dependencies": [
