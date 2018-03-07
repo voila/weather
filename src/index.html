@@ -1,11 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Pure Reason Example</title>
+  <style>
+    ul {
+      display: grid;
+      padding: 0;
+    }
+
+    li {
+      list-style: none;
+      width: 8em;
+      grid-row-start: 1;
+      background: lavender;
+      padding: 1em;
+      margin: .5em;
+      border-radius: 1em;
+    }
+
+    .icon {
+      font-size: xx-large;
+      float: right;
+    }
+
+    .date {
+      font-size: small;
+    }
+
+    .summary {
+      font-size: large;
+      margin: .5em .5em .5em 0;
+    }
+
+    .rain {
+      font-size: small;
+    }
+
+    .wind {
+      font-size: small;
+    }
+
+    .temp {
+      clear: both;
+      font-size: small;
+    }
+  </style>
 </head>
+
 <body>
   <div id="index"></div>
   <script src="../build/index.js"></script>
 </body>
+
 </html>
