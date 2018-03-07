@@ -1,7 +1,7 @@
 let forecast = (lat, lon) => {
-  let apiUrl = {j|/weather/$lat/$lon?|j};
-  Js.Promise.(Bs_fetch.fetch(apiUrl) |> then_(Bs_fetch.Response.text));
-  /* |> then_(jsonText => resolve(parseJson(Js.Json.parseExn(jsonText)))) */
+  let apiUrl = {j|https://api.myjson.com/bins/ifx55|j};
+  Js.log(apiUrl);
+  Js.Promise.(Fetch.fetch(apiUrl) |> then_(Fetch.Response.text));
 };
 
 let mockForecast = (_lat, _lon) => {
@@ -14,5 +14,4 @@ let mockForecast = (_lat, _lon) => {
       ]
       |};
   Js.Promise.resolve(json);
-  /* |> then_(jsonText => resolve(parseJson(Js.Json.parseExn(jsonText)))) */
 };

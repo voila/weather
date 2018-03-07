@@ -5,7 +5,9 @@ let ste = ReasonReact.stringToElement;
 type state = {data: option(points)};
 
 type action =
-  | DataLoaded(points);
+  | DataLoaded(points)
+  | PosLoaded(float, float)
+  | PosError(string);
 
 /* This is the basic component. */
 let component = ReasonReact.reducerComponent("Page");
@@ -29,19 +31,29 @@ let make = _children => {
   reducer: (action, _state) =>
     switch action {
     | DataLoaded(pts) => ReasonReact.Update({data: Some(pts)})
+    | PosLoaded(lat, lon) =>
+      let lat = string_of_float(lat);
+      let lon = string_of_float(lon);
+      ReasonReact.SideEffects(
+        (
+          self => {
+            Js.log(lat ++ " - " ++ lon);
+            Api.forecast(lat, lon)
+            |> Js.Promise.then_((jsonText: string) => {
+                 let pts = parseJson(Js.Json.parseExn(jsonText));
+                 self.send(DataLoaded(pts));
+                 Js.Promise.resolve();
+               })
+            |> ignore;
+          }
+        )
+      );
     },
   didMount: self => {
-    let () =
-      Js.Promise.(
-        Api.mockForecast(1, 2)
-        |> then_(jsonText => {
-             /* let x = decodeDataPoint(jsonText); */
-             let resp: points = parseJson(Js.Json.parseExn(jsonText));
-             self.send(DataLoaded(resp));
-             resolve();
-           })
-        |> ignore
-      );
+    Geo.getLocation(
+      ~sendPos=(lat, lon) => self.send(PosLoaded(lat, lon)),
+      ~sendErr=msg => self.send(PosError(msg))
+    );
     ReasonReact.NoUpdate;
   },
   render: ({state}) =>
