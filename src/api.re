@@ -54,7 +54,7 @@ let openWeatherMap = (lat, lon) => {
   let apiUrl =
     "http://api.openweathermap.org/data/2.5/forecast?"
     ++ {j|lat=$lat&lon=$lon|j}
-    ++ "&mode=json&units=metric&appid=cba0e822fd9d16d74c7ae1bfb1d497f3";
+    ++ "&mode=json&units=metric&appid=" ++ Env.appID;
   Fetch.fetch(apiUrl) |> Js.Promise.then_(Fetch.Response.text);
 };
 

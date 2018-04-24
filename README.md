@@ -1,4 +1,11 @@
-# taster
+# weather
+
+Uses DarkSky's API (https://darksky.net/dev) to retrieve a 48 hours weather forecast for a given location, and return a subset of that data to its clients.
+
+ Change the API key in `env.re` and replace `Api.forecastMock` with `Api.forecast` in `page.re`.
+
+See https://github.com/voila/reason-client-server-example for more information
+
 
 Run this project:
 
