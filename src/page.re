@@ -1,13 +1,11 @@
-open Types;
-
 let ste = ReasonReact.stringToElement;
 
 [@bs.val] external alert : string => unit = "alert";
 
-type state = {data: option(points)};
+type state = {data: option(Api.points)};
 
 type action =
-  | DataLoaded(points)
+  | DataLoaded(Api.points)
   | PosLoaded(float, float)
   | PosError(string);
 
@@ -37,21 +35,11 @@ let make = _children => {
       alert("GeoLocation: " ++ msg);
       ReasonReact.NoUpdate;
     | PosLoaded(lat, lon) =>
-      let lat = string_of_float(lat);
-      let lon = string_of_float(lon);
+      /* let lat = string_of_float(lat);
+         let lon = string_of_float(lon); */
       ReasonReact.SideEffects(
-        (
-          self =>
-            Api.forecast(lat, lon)
-            |> Js.Promise.then_((jsonText: string) => {
-                 Js.log(jsonText);
-                 let pts = decodePoints(jsonText);
-                 self.send(DataLoaded(pts));
-                 Js.Promise.resolve();
-               })
-            |> ignore
-        )
-      );
+        (self => Api.forecastMock(lat, lon, pts => self.send(DataLoaded(pts))))
+      )
     },
   didMount: self => {
     Geo.getLocation(

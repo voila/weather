@@ -1,4 +1,4 @@
-open Types;
+open Api;
 
 let ste = ReasonReact.stringToElement;
 
