@@ -34,7 +34,7 @@ let decodePoint: Json.Decode.decoder(point) =
       | _ => raise(No_weather)
       };
     };
-    [%debugger];
+    /* [%debugger]; */
     {time, icon, press, desc, rain, temp, wind};
   };
 
